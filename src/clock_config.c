@@ -23,8 +23,8 @@
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!GlobalInfo
 product: Clocks v10.0
-processor: MIMXRT1064xxxxA
-package_id: MIMXRT1064DVL6A
+processor: MIMXRT1064xxxxB
+package_id: MIMXRT1064DVL6B
 mcu_data: ksdk2_0
 processor_version: 0.12.10
 board: MIMXRT1064-EVK
