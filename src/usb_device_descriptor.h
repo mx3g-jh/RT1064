@@ -105,9 +105,9 @@
 #define USB_CDC_VCOM_CONFIGURE_INDEX (1U)
 
 #if ((defined USB_DEVICE_CONFIG_CDC_CIC_EP_DISABLE) && (USB_DEVICE_CONFIG_CDC_CIC_EP_DISABLE > 0U))
-#define USB_CDC_VCOM_ENDPOINT_CIC_COUNT (0U)
+	#define USB_CDC_VCOM_ENDPOINT_CIC_COUNT (0U)
 #else
-#define USB_CDC_VCOM_ENDPOINT_CIC_COUNT (1U)
+	#define USB_CDC_VCOM_ENDPOINT_CIC_COUNT (1U)
 #endif
 #define USB_CDC_VCOM_ENDPOINT_DIC_COUNT             (2U)
 #define USB_CDC_VCOM_INTERRUPT_IN_ENDPOINT          (1U)
@@ -124,10 +124,10 @@
 /* Packet size. */
 #if ((defined USB_DEVICE_CONFIG_CDC_CIC_EP_DISABLE) && (USB_DEVICE_CONFIG_CDC_CIC_EP_DISABLE > 0U))
 #else
-#define HS_CDC_VCOM_INTERRUPT_IN_PACKET_SIZE (16U)
-#define FS_CDC_VCOM_INTERRUPT_IN_PACKET_SIZE (16U)
-#define HS_CDC_VCOM_INTERRUPT_IN_INTERVAL    (0x07U) /* 2^(7-1) = 8ms */
-#define FS_CDC_VCOM_INTERRUPT_IN_INTERVAL    (0x08U)
+	#define HS_CDC_VCOM_INTERRUPT_IN_PACKET_SIZE (16U)
+	#define FS_CDC_VCOM_INTERRUPT_IN_PACKET_SIZE (16U)
+	#define HS_CDC_VCOM_INTERRUPT_IN_INTERVAL    (0x07U) /* 2^(7-1) = 8ms */
+	#define FS_CDC_VCOM_INTERRUPT_IN_INTERVAL    (0x08U)
 #endif
 #define HS_CDC_VCOM_BULK_IN_PACKET_SIZE  (512U)
 #define FS_CDC_VCOM_BULK_IN_PACKET_SIZE  (64U)
@@ -189,7 +189,7 @@ extern usb_status_t USB_DeviceSetSpeed(usb_device_handle handle, uint8_t speed);
  * @return A USB error code or kStatus_USB_Success.
  */
 extern usb_status_t USB_DeviceGetDeviceDescriptor(usb_device_handle handle,
-                                                  usb_device_get_device_descriptor_struct_t *deviceDescriptor);
+		usb_device_get_device_descriptor_struct_t *deviceDescriptor);
 /*!
  * @brief USB device get string descriptor function.
  *
@@ -201,7 +201,7 @@ extern usb_status_t USB_DeviceGetDeviceDescriptor(usb_device_handle handle,
  * @return A USB error code or kStatus_USB_Success.
  */
 usb_status_t USB_DeviceGetStringDescriptor(usb_device_handle handle,
-                                           usb_device_get_string_descriptor_struct_t *stringDescriptor);
+		usb_device_get_string_descriptor_struct_t *stringDescriptor);
 /*!
  * @brief USB device get configuration descriptor function.
  *
@@ -213,5 +213,5 @@ usb_status_t USB_DeviceGetStringDescriptor(usb_device_handle handle,
  * @return A USB error code or kStatus_USB_Success.
  */
 extern usb_status_t USB_DeviceGetConfigurationDescriptor(
-    usb_device_handle handle, usb_device_get_configuration_descriptor_struct_t *configurationDescriptor);
+	usb_device_handle handle, usb_device_get_configuration_descriptor_struct_t *configurationDescriptor);
 #endif /* _USB_DEVICE_DESCRIPTOR_H_ */

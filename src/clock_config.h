@@ -32,6 +32,7 @@ void BOARD_InitBootClocks(void);
 
 #if defined(__cplusplus)
 }
+
 #endif /* __cplusplus*/
 
 /*******************************************************************************
@@ -122,6 +123,7 @@ void BOARD_BootClockRUN(void);
 
 #if defined(__cplusplus)
 }
+
 #endif /* __cplusplus*/
 
 /*******************************************************************************
@@ -212,6 +214,7 @@ void BOARD_BootClockRUN_528M(void);
 
 #if defined(__cplusplus)
 }
+
 #endif /* __cplusplus*/
 
 #endif /* _CLOCK_CONFIG_H_ */

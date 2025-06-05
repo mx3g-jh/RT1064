@@ -18,11 +18,10 @@
  **********************************************************************************************************************/
 
 /*! @brief Direction type  */
-typedef enum _pin_mux_direction
-{
-  kPIN_MUX_DirectionInput = 0U,         /* Input direction */
-  kPIN_MUX_DirectionOutput = 1U,        /* Output direction */
-  kPIN_MUX_DirectionInputOrOutput = 2U  /* Input or output direction */
+typedef enum _pin_mux_direction {
+	kPIN_MUX_DirectionInput = 0U,         /* Input direction */
+	kPIN_MUX_DirectionOutput = 1U,        /* Output direction */
+	kPIN_MUX_DirectionInputOrOutput = 2U  /* Input or output direction */
 } pin_mux_direction_t;
 
 /*!
@@ -52,6 +51,7 @@ void BOARD_InitPins(void);
 
 #if defined(__cplusplus)
 }
+
 #endif
 
 /*!

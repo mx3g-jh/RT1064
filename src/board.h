@@ -29,35 +29,35 @@
 #define BOARD_UART_IRQ_HANDLER LPUART1_IRQHandler
 
 #ifndef BOARD_DEBUG_UART_BAUDRATE
-#define BOARD_DEBUG_UART_BAUDRATE (115200U)
+	#define BOARD_DEBUG_UART_BAUDRATE (115200U)
 #endif /* BOARD_DEBUG_UART_BAUDRATE */
 
 /*! @brief The USER_LED used for board */
 #define LOGIC_LED_ON  (0U)
 #define LOGIC_LED_OFF (1U)
 #ifndef BOARD_USER_LED_GPIO
-#define BOARD_USER_LED_GPIO GPIO1
+	#define BOARD_USER_LED_GPIO GPIO1
 #endif
 #ifndef BOARD_USER_LED_GPIO_PIN
-#define BOARD_USER_LED_GPIO_PIN 9U
+	#define BOARD_USER_LED_GPIO_PIN 9U
 #endif
 
 #define USER_LED_INIT(output)                                            \
-    GPIO_PinWrite(BOARD_USER_LED_GPIO, BOARD_USER_LED_GPIO_PIN, output); \
-    BOARD_USER_LED_GPIO->GDIR |= (1U << BOARD_USER_LED_GPIO_PIN)                        /*!< Enable target USER_LED */
+	GPIO_PinWrite(BOARD_USER_LED_GPIO, BOARD_USER_LED_GPIO_PIN, output); \
+	BOARD_USER_LED_GPIO->GDIR |= (1U << BOARD_USER_LED_GPIO_PIN)                        /*!< Enable target USER_LED */
 #define USER_LED_ON() \
-    GPIO_PortClear(BOARD_USER_LED_GPIO, 1U << BOARD_USER_LED_GPIO_PIN)                  /*!< Turn off target USER_LED */
+	GPIO_PortClear(BOARD_USER_LED_GPIO, 1U << BOARD_USER_LED_GPIO_PIN)                  /*!< Turn off target USER_LED */
 #define USER_LED_OFF() GPIO_PortSet(BOARD_USER_LED_GPIO, 1U << BOARD_USER_LED_GPIO_PIN) /*!<Turn on target USER_LED*/
 #define USER_LED_TOGGLE()                                       \
-    GPIO_PinWrite(BOARD_USER_LED_GPIO, BOARD_USER_LED_GPIO_PIN, \
-                  0x1 ^ GPIO_PinRead(BOARD_USER_LED_GPIO, BOARD_USER_LED_GPIO_PIN)) /*!< Toggle target USER_LED */
+	GPIO_PinWrite(BOARD_USER_LED_GPIO, BOARD_USER_LED_GPIO_PIN, \
+		      0x1 ^ GPIO_PinRead(BOARD_USER_LED_GPIO, BOARD_USER_LED_GPIO_PIN)) /*!< Toggle target USER_LED */
 
 /*! @brief Define the port interrupt number for the board switches */
 #ifndef BOARD_USER_BUTTON_GPIO
-#define BOARD_USER_BUTTON_GPIO GPIO5
+	#define BOARD_USER_BUTTON_GPIO GPIO5
 #endif
 #ifndef BOARD_USER_BUTTON_GPIO_PIN
-#define BOARD_USER_BUTTON_GPIO_PIN (0U)
+	#define BOARD_USER_BUTTON_GPIO_PIN (0U)
 #endif
 #define BOARD_USER_BUTTON_IRQ         GPIO5_Combined_0_15_IRQn
 #define BOARD_USER_BUTTON_IRQ_HANDLER GPIO5_Combined_0_15_IRQHandler
@@ -71,17 +71,17 @@
 
 /*! @brief The ENET PHY used for board. */
 #ifndef BOARD_ENET_PHY_RESET_GPIO
-#define BOARD_ENET_PHY_RESET_GPIO GPIO1
+	#define BOARD_ENET_PHY_RESET_GPIO GPIO1
 #endif
 #ifndef BOARD_ENET_PHY_RESET_GPIO_PIN
-#define BOARD_ENET_PHY_RESET_GPIO_PIN (9U)
+	#define BOARD_ENET_PHY_RESET_GPIO_PIN (9U)
 #endif
 
 #define BOARD_ENET_PHY_RESET                                                          \
-    GPIO_WritePinOutput(BOARD_ENET_PHY_RESET_GPIO, BOARD_ENET_PHY_RESET_GPIO_PIN, 0); \
-    SDK_DelayAtLeastUs(10000, CLOCK_GetFreq(kCLOCK_CpuClk));                          \
-    GPIO_WritePinOutput(BOARD_ENET_PHY_RESET_GPIO, BOARD_ENET_PHY_RESET_GPIO_PIN, 1); \
-    SDK_DelayAtLeastUs(100, CLOCK_GetFreq(kCLOCK_CpuClk))
+	GPIO_WritePinOutput(BOARD_ENET_PHY_RESET_GPIO, BOARD_ENET_PHY_RESET_GPIO_PIN, 0); \
+	SDK_DelayAtLeastUs(10000, CLOCK_GetFreq(kCLOCK_CpuClk));                          \
+	GPIO_WritePinOutput(BOARD_ENET_PHY_RESET_GPIO, BOARD_ENET_PHY_RESET_GPIO_PIN, 1); \
+	SDK_DelayAtLeastUs(100, CLOCK_GetFreq(kCLOCK_CpuClk))
 
 /* USB PHY condfiguration */
 #define BOARD_USB_PHY_D_CAL     (0x0CU)
@@ -111,7 +111,7 @@
 #define BOARD_CAMERA_I2C_CLOCK_SOURCE_DIVIDER (5U)
 #define BOARD_CAMERA_I2C_CLOCK_SOURCE_SELECT  (0U) /* Select USB1 PLL (480 MHz) as LPI2C's clock source */
 #define BOARD_CAMERA_I2C_CLOCK_FREQ \
-    (CLOCK_GetFreq(kCLOCK_Usb1PllClk) / 8 / (BOARD_CAMERA_I2C_CLOCK_SOURCE_DIVIDER + 1U))
+	(CLOCK_GetFreq(kCLOCK_Usb1PllClk) / 8 / (BOARD_CAMERA_I2C_CLOCK_SOURCE_DIVIDER + 1U))
 
 #define BOARD_CAMERA_I2C_SCL_GPIO GPIO1
 #define BOARD_CAMERA_I2C_SCL_PIN  16
@@ -151,52 +151,52 @@ void BOARD_ConfigMPU(void);
 #if defined(SDK_I2C_BASED_COMPONENT_USED) && SDK_I2C_BASED_COMPONENT_USED
 void BOARD_LPI2C_Init(LPI2C_Type *base, uint32_t clkSrc_Hz);
 status_t BOARD_LPI2C_Send(LPI2C_Type *base,
-                          uint8_t deviceAddress,
-                          uint32_t subAddress,
-                          uint8_t subaddressSize,
-                          uint8_t *txBuff,
-                          uint8_t txBuffSize);
+			  uint8_t deviceAddress,
+			  uint32_t subAddress,
+			  uint8_t subaddressSize,
+			  uint8_t *txBuff,
+			  uint8_t txBuffSize);
 status_t BOARD_LPI2C_Receive(LPI2C_Type *base,
-                             uint8_t deviceAddress,
-                             uint32_t subAddress,
-                             uint8_t subaddressSize,
-                             uint8_t *rxBuff,
-                             uint8_t rxBuffSize);
+			     uint8_t deviceAddress,
+			     uint32_t subAddress,
+			     uint8_t subaddressSize,
+			     uint8_t *rxBuff,
+			     uint8_t rxBuffSize);
 status_t BOARD_LPI2C_SendSCCB(LPI2C_Type *base,
-                              uint8_t deviceAddress,
-                              uint32_t subAddress,
-                              uint8_t subaddressSize,
-                              uint8_t *txBuff,
-                              uint8_t txBuffSize);
+			      uint8_t deviceAddress,
+			      uint32_t subAddress,
+			      uint8_t subaddressSize,
+			      uint8_t *txBuff,
+			      uint8_t txBuffSize);
 status_t BOARD_LPI2C_ReceiveSCCB(LPI2C_Type *base,
-                                 uint8_t deviceAddress,
-                                 uint32_t subAddress,
-                                 uint8_t subaddressSize,
-                                 uint8_t *rxBuff,
-                                 uint8_t rxBuffSize);
+				 uint8_t deviceAddress,
+				 uint32_t subAddress,
+				 uint8_t subaddressSize,
+				 uint8_t *rxBuff,
+				 uint8_t rxBuffSize);
 void BOARD_Accel_I2C_Init(void);
 status_t BOARD_Accel_I2C_Send(uint8_t deviceAddress, uint32_t subAddress, uint8_t subaddressSize, uint32_t txBuff);
 status_t BOARD_Accel_I2C_Receive(
-    uint8_t deviceAddress, uint32_t subAddress, uint8_t subaddressSize, uint8_t *rxBuff, uint8_t rxBuffSize);
+	uint8_t deviceAddress, uint32_t subAddress, uint8_t subaddressSize, uint8_t *rxBuff, uint8_t rxBuffSize);
 void BOARD_Codec_I2C_Init(void);
 status_t BOARD_Codec_I2C_Send(
-    uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, const uint8_t *txBuff, uint8_t txBuffSize);
+	uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, const uint8_t *txBuff, uint8_t txBuffSize);
 status_t BOARD_Codec_I2C_Receive(
-    uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, uint8_t *rxBuff, uint8_t rxBuffSize);
+	uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, uint8_t *rxBuff, uint8_t rxBuffSize);
 void BOARD_Camera_I2C_Init(void);
 status_t BOARD_Camera_I2C_Send(
-    uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, const uint8_t *txBuff, uint8_t txBuffSize);
+	uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, const uint8_t *txBuff, uint8_t txBuffSize);
 status_t BOARD_Camera_I2C_Receive(
-    uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, uint8_t *rxBuff, uint8_t rxBuffSize);
+	uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, uint8_t *rxBuff, uint8_t rxBuffSize);
 
 status_t BOARD_Camera_I2C_SendSCCB(
-    uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, const uint8_t *txBuff, uint8_t txBuffSize);
+	uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, const uint8_t *txBuff, uint8_t txBuffSize);
 status_t BOARD_Camera_I2C_ReceiveSCCB(
-    uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, uint8_t *rxBuff, uint8_t rxBuffSize);
+	uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, uint8_t *rxBuff, uint8_t rxBuffSize);
 status_t BOARD_Touch_I2C_Send(
-    uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, const uint8_t *txBuff, uint8_t txBuffSize);
+	uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, const uint8_t *txBuff, uint8_t txBuffSize);
 status_t BOARD_Touch_I2C_Receive(
-    uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, uint8_t *rxBuff, uint8_t rxBuffSize);
+	uint8_t deviceAddress, uint32_t subAddress, uint8_t subAddressSize, uint8_t *rxBuff, uint8_t rxBuffSize);
 #endif /* SDK_I2C_BASED_COMPONENT_USED */
 
 void BOARD_SD_Pin_Config(uint32_t speed, uint32_t strength);
@@ -204,6 +204,7 @@ void BOARD_MMC_Pin_Config(uint32_t speed, uint32_t strength);
 
 #if defined(__cplusplus)
 }
+
 #endif /* __cplusplus */
 
 #endif /* _BOARD_H_ */
