@@ -1,11 +1,11 @@
 OPENOCD		?= JLinkExe
 MAKE_ARGS = -j14
 USE_MCU_NAME = MIMXRT1064xxx6B
-PNA = dev_cdc_vcom_freertos
 # === 项目配置 ===
 BUILD_DIR := build
 TOOLCHAIN_FILE := tools/cmake_toolchain_files/armgcc.cmake
 BUILD_TYPE := flexspi_nor_debug
+BUILD_NAME := RT1064
 GENERATOR := Unix Makefiles
 LOG := build_log.txt
 
@@ -30,6 +30,7 @@ config:
 	cd $(BUILD_DIR) && cmake -DCMAKE_TOOLCHAIN_FILE=../$(TOOLCHAIN_FILE) \
 		-G "$(GENERATOR)" \
 		-DCMAKE_BUILD_TYPE=$(BUILD_TYPE) \
+		-DCMAKE_BUILD_NAME=$(BUILD_NAME) \
 		..
 
 # 编译并输出日志
@@ -42,7 +43,7 @@ define generate-jlink-script
 	@rm -f jlink-flash-fw-standalone.jlink
 	@echo "Creating jlink-flash-fw-standalone.jlink"
 	@echo "h" >> jlink-flash-fw-standalone.jlink
-	@echo "loadfile ./build/${PNA}.bin, 0x07000000" >> jlink-flash-fw-standalone.jlink
+	@echo "loadfile ./build/${BUILD_NAME}.bin, 0x070000000" >> jlink-flash-fw-standalone.jlink
 	@echo "r" >> jlink-flash-fw-standalone.jlink
 	@echo "q" >> jlink-flash-fw-standalone.jlink
 endef

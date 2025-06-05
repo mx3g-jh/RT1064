@@ -1806,8 +1806,7 @@ list(APPEND CMAKE_MODULE_PATH
   ${CMAKE_CURRENT_LIST_DIR}/../../CMSIS/NN
   ${CMAKE_CURRENT_LIST_DIR}/../../CMSIS/RTOS2
   ${CMAKE_CURRENT_LIST_DIR}/../../CMSIS/RTOS2/Include
-  ${CMAKE_CURRENT_LIST_DIR}/../../boards/evkmimxrt1064/project_template
-  ${CMAKE_CURRENT_LIST_DIR}/../../boards/evkmimxrt1064/xip
+  ${CMAKE_CURRENT_LIST_DIR}/../../board/xip
   ${CMAKE_CURRENT_LIST_DIR}/../../components/audio
   ${CMAKE_CURRENT_LIST_DIR}/../../components/aws_iot/kvstore
   ${CMAKE_CURRENT_LIST_DIR}/../../components/aws_iot/logging

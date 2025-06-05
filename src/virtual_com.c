@@ -621,102 +621,118 @@ void USB_DeviceTask(void *handle)
  */
 void APPTask(void *handle)
 {
-	usb_status_t error = kStatus_USB_Error;
-	uint32_t usbOsaCurrentSr;
+	while (true) {
+		usb_echo("---------------tasks--------------\r\n");
+		vTaskDelay(1000);
+		// 缓冲区大小建议大一点，FreeRTOS 文档推荐至少 512 字节
+		char buffer[512];
 
-	USB_DeviceApplicationInit();
+		// 获取任务信息
+		vTaskList(buffer);
 
-	#if USB_DEVICE_CONFIG_USE_TASK
-
-	if (s_cdcVcom.deviceHandle) {
-		if (xTaskCreate(USB_DeviceTask,                  /* pointer to the task                      */
-				(char const *)"usb device task", /* task name for kernel awareness debugging */
-				5000L / sizeof(portSTACK_TYPE),  /* task stack size                          */
-				s_cdcVcom.deviceHandle,          /* optional task startup argument           */
-				5,                               /* initial priority                         */
-				&s_cdcVcom.deviceTaskHandle      /* optional task handle to create           */
-			       ) != pdPASS) {
-			usb_echo("usb device task create failed!\r\n");
-			return;
-		}
+		// 打印任务信息（例如串口或调试控制台）
+		usb_echo("Task List:\n");
+		usb_echo("Name          State  Prio Stack Num\n");
+		usb_echo("*************************************\n");
+		usb_echo("%s\n", buffer);
 	}
 
-	#endif
+	// usb_status_t error = kStatus_USB_Error;
+	// uint32_t usbOsaCurrentSr;
 
-	while (1) {
-		if ((1U == s_cdcVcom.attach) && (1U == s_cdcVcom.startTransactions)) {
-			/* Enter critical can not be added here because of the loop */
-			/* endpoint callback length is USB_CANCELLED_TRANSFER_LENGTH (0xFFFFFFFFU) when transfer is canceled */
-			if ((0 != s_recvSize) && (USB_CANCELLED_TRANSFER_LENGTH != s_recvSize)) {
-				/* The operating timing sequence has guaranteed there is no conflict to access the s_recvSize between
-				   USB ISR and this task. Therefore, the following code of Enter/Exit ctitical mode is useless, only to
-				   mention users the exclusive access of s_recvSize if users implement their own
-				   application referred to this SDK demo */
-				CDC_VCOM_FreeRTOSEnterCritical(&usbOsaCurrentSr);
+	// USB_DeviceApplicationInit();
 
-				if ((0U != s_recvSize) && (USB_CANCELLED_TRANSFER_LENGTH != s_recvSize)) {
-					/* Copy Buffer to Send Buff */
-					memcpy(s_currSendBuf, s_currRecvBuf, s_recvSize);
-					s_sendSize = s_recvSize;
-					s_recvSize = 0;
-				}
+	// #if USB_DEVICE_CONFIG_USE_TASK
 
-				CDC_VCOM_FreeRTOSExitCritical(usbOsaCurrentSr);
-			}
+	// if (s_cdcVcom.deviceHandle) {
+	// 	if (xTaskCreate(USB_DeviceTask,                  /* pointer to the task                      */
+	// 			(char const *)"usb device task", /* task name for kernel awareness debugging */
+	// 			5000L / sizeof(portSTACK_TYPE),  /* task stack size                          */
+	// 			s_cdcVcom.deviceHandle,          /* optional task startup argument           */
+	// 			5,                               /* initial priority                         */
+	// 			&s_cdcVcom.deviceTaskHandle      /* optional task handle to create           */
+	// 		       ) != pdPASS) {
+	// 		usb_echo("usb device task create failed!\r\n");
+	// 		return;
+	// 	}
+	// }
 
-			if (0U != s_sendSize) {
-				uint32_t size = s_sendSize;
-				s_sendSize    = 0;
+	// #endif
 
-				error =
-					USB_DeviceCdcAcmSend(s_cdcVcom.cdcAcmHandle, USB_CDC_VCOM_BULK_IN_ENDPOINT, s_currSendBuf, size);
+	// while (1) {
+	// 	if ((1U == s_cdcVcom.attach) && (1U == s_cdcVcom.startTransactions)) {
+	// 		/* Enter critical can not be added here because of the loop */
+	// 		/* endpoint callback length is USB_CANCELLED_TRANSFER_LENGTH (0xFFFFFFFFU) when transfer is canceled */
+	// 		if ((0 != s_recvSize) && (USB_CANCELLED_TRANSFER_LENGTH != s_recvSize)) {
+	// 			/* The operating timing sequence has guaranteed there is no conflict to access the s_recvSize between
+	// 			   USB ISR and this task. Therefore, the following code of Enter/Exit ctitical mode is useless, only to
+	// 			   mention users the exclusive access of s_recvSize if users implement their own
+	// 			   application referred to this SDK demo */
+	// 			CDC_VCOM_FreeRTOSEnterCritical(&usbOsaCurrentSr);
 
-				if (error != kStatus_USB_Success) {
-					/* Failure to send Data Handling code here */
-				}
-			}
+	// 			if ((0U != s_recvSize) && (USB_CANCELLED_TRANSFER_LENGTH != s_recvSize)) {
+	// 				/* Copy Buffer to Send Buff */
+	// 				memcpy(s_currSendBuf, s_currRecvBuf, s_recvSize);
+	// 				s_sendSize = s_recvSize;
+	// 				s_recvSize = 0;
+	// 			}
 
-			#if defined(FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED) && (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED > 0U) && \
-			defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
-			defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
+	// 			CDC_VCOM_FreeRTOSExitCritical(usbOsaCurrentSr);
+	// 		}
 
-			if ((s_waitForDataReceive)) {
-				if (s_comOpen == 1) {
-					/* Wait for all the packets been sent during opening the com port. Otherwise these packets may
-					 * wake up the system.
-					 */
-					usb_echo("Waiting to enter lowpower ...\r\n");
+	// 		if (0U != s_sendSize) {
+	// 			uint32_t size = s_sendSize;
+	// 			s_sendSize    = 0;
 
-					for (uint32_t i = 0U; i < 16000000U; ++i) {
-						__NOP(); /* delay */
-					}
+	// 			error =
+	// 				USB_DeviceCdcAcmSend(s_cdcVcom.cdcAcmHandle, USB_CDC_VCOM_BULK_IN_ENDPOINT, s_currSendBuf, size);
 
-					s_comOpen = 0;
-				}
+	// 			if (error != kStatus_USB_Success) {
+	// 				/* Failure to send Data Handling code here */
+	// 			}
+	// 		}
 
-				usb_echo("Enter lowpower\r\n");
-				BOARD_DbgConsole_Deinit();
-				USB0->INTEN &= ~USB_INTEN_TOKDNEEN_MASK;
+	// 		#if defined(FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED) && (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED > 0U) && \
+	// 		defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
+	// 		defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
 
-				if (SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) {
-					SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
-				}
+	// 		if ((s_waitForDataReceive)) {
+	// 			if (s_comOpen == 1) {
+	// 				/* Wait for all the packets been sent during opening the com port. Otherwise these packets may
+	// 				 * wake up the system.
+	// 				 */
+	// 				usb_echo("Waiting to enter lowpower ...\r\n");
 
-				USB_EnterLowpowerMode();
+	// 				for (uint32_t i = 0U; i < 16000000U; ++i) {
+	// 					__NOP(); /* delay */
+	// 				}
 
-				if (SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) {
-					SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
-				}
+	// 				s_comOpen = 0;
+	// 			}
 
-				s_waitForDataReceive = 0;
-				USB0->INTEN |= USB_INTEN_TOKDNEEN_MASK;
-				BOARD_DbgConsole_Init();
-				usb_echo("Exit  lowpower\r\n");
-			}
+	// 			usb_echo("Enter lowpower\r\n");
+	// 			BOARD_DbgConsole_Deinit();
+	// 			USB0->INTEN &= ~USB_INTEN_TOKDNEEN_MASK;
 
-			#endif
-		}
-	}
+	// 			if (SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) {
+	// 				SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
+	// 			}
+
+	// 			USB_EnterLowpowerMode();
+
+	// 			if (SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) {
+	// 				SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+	// 			}
+
+	// 			s_waitForDataReceive = 0;
+	// 			USB0->INTEN |= USB_INTEN_TOKDNEEN_MASK;
+	// 			BOARD_DbgConsole_Init();
+	// 			usb_echo("Exit  lowpower\r\n");
+	// 		}
+
+	// 		#endif
+	// 	}
+	// }
 }
 
 #if defined(__CC_ARM) || (defined(__ARMCC_VERSION)) || defined(__GNUC__)

@@ -26,7 +26,7 @@ set(ProjDirPath ${CMAKE_CURRENT_SOURCE_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${ProjDirPath}/build/)
 set(LIBRARY_OUTPUT_PATH ${ProjDirPath}/build/)
 
-set(PROJECT_NAME dev_cdc_vcom_freertos)
+set(PROJECT_NAME ${CMAKE_BUILD_NAME})
 project(${PROJECT_NAME})
 
 enable_language(ASM CXX C)

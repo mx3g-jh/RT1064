@@ -18,6 +18,7 @@ cd build
 cmake -DCMAKE_TOOLCHAIN_FILE="../tools/cmake_toolchain_files/armgcc.cmake" \
       -G "Unix Makefiles" \
       -DCMAKE_BUILD_TYPE=flexspi_nor_debug \
+      -DPROJECT_NAME=test \
       ..
 
 # 构建项目，并输出到日志
