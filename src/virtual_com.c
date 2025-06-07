@@ -529,7 +529,7 @@ usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event, void *
 	case kUSB_DeviceEventGetConfigurationDescriptor:
 		if (NULL != param) {
 			error = USB_DeviceGetConfigurationDescriptor(handle,
-				(usb_device_get_configuration_descriptor_struct_t *)param);
+					(usb_device_get_configuration_descriptor_struct_t *)param);
 		}
 
 		break;
