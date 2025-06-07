@@ -11,6 +11,7 @@
 #include "fsl_common.h"
 #include "fsl_gpio.h"
 #include "fsl_clock.h"
+#include "fsl_gpt.h"
 
 /*******************************************************************************
  * Definitions
@@ -29,7 +30,7 @@
 #define BOARD_UART_IRQ_HANDLER LPUART1_IRQHandler
 
 #ifndef BOARD_DEBUG_UART_BAUDRATE
-	#define BOARD_DEBUG_UART_BAUDRATE (115200U)
+	#define BOARD_DEBUG_UART_BAUDRATE (921600U)
 #endif /* BOARD_DEBUG_UART_BAUDRATE */
 
 /*! @brief The USER_LED used for board */

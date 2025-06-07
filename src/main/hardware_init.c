@@ -12,7 +12,7 @@
 #include "usb_device_ch9.h"
 #include "usb_device_descriptor.h"
 
-#include "virtual_com.h"
+#include "main.h"
 #include "pin_mux.h"
 #include "usb_phy.h"
 #include "clock_config.h"

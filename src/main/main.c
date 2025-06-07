@@ -22,7 +22,7 @@
 #include "usb_device_ch9.h"
 
 #include "usb_device_descriptor.h"
-#include "virtual_com.h"
+#include "main.h"
 #if (defined(FSL_FEATURE_SOC_SYSMPU_COUNT) && (FSL_FEATURE_SOC_SYSMPU_COUNT > 0U))
 	#include "fsl_sysmpu.h"
 #endif /* FSL_FEATURE_SOC_SYSMPU_COUNT */
@@ -71,6 +71,7 @@ extern usb_device_class_struct_t g_UsbDeviceCdcVcomConfig;
 /* Data structure of virtual com device */
 usb_cdc_vcom_struct_t s_cdcVcom;
 static char const *s_appName = "app task";
+static char const *s_printName = "print task";
 
 /* Line coding of cdc device */
 USB_DMA_INIT_DATA_ALIGN(USB_DATA_ALIGN_SIZE)
@@ -529,7 +530,7 @@ usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event, void *
 	case kUSB_DeviceEventGetConfigurationDescriptor:
 		if (NULL != param) {
 			error = USB_DeviceGetConfigurationDescriptor(handle,
-					(usb_device_get_configuration_descriptor_struct_t *)param);
+				(usb_device_get_configuration_descriptor_struct_t *)param);
 		}
 
 		break;
@@ -621,118 +622,192 @@ void USB_DeviceTask(void *handle)
  */
 void APPTask(void *handle)
 {
-	while (true) {
-		usb_echo("---------------tasks--------------\r\n");
-		vTaskDelay(1000);
-		// 缓冲区大小建议大一点，FreeRTOS 文档推荐至少 512 字节
-		char buffer[512];
+	usb_status_t error = kStatus_USB_Error;
+	uint32_t usbOsaCurrentSr;
 
-		// 获取任务信息
-		vTaskList(buffer);
+	USB_DeviceApplicationInit();
 
-		// 打印任务信息（例如串口或调试控制台）
-		usb_echo("Task List:\n");
-		usb_echo("Name          State  Prio Stack Num\n");
-		usb_echo("*************************************\n");
-		usb_echo("%s\n", buffer);
+	#if USB_DEVICE_CONFIG_USE_TASK
+
+	if (s_cdcVcom.deviceHandle) {
+		if (xTaskCreate(USB_DeviceTask,                  /* pointer to the task                      */
+				(char const *)"usb device task", /* task name for kernel awareness debugging */
+				5000L / sizeof(portSTACK_TYPE),  /* task stack size                          */
+				s_cdcVcom.deviceHandle,          /* optional task startup argument           */
+				5,                               /* initial priority                         */
+				&s_cdcVcom.deviceTaskHandle      /* optional task handle to create           */
+			       ) != pdPASS) {
+			usb_echo("usb device task create failed!\r\n");
+			return;
+		}
 	}
 
-	// usb_status_t error = kStatus_USB_Error;
-	// uint32_t usbOsaCurrentSr;
+	#endif
 
-	// USB_DeviceApplicationInit();
+	while (1) {
+		if ((1U == s_cdcVcom.attach) && (1U == s_cdcVcom.startTransactions)) {
+			/* Enter critical can not be added here because of the loop */
+			/* endpoint callback length is USB_CANCELLED_TRANSFER_LENGTH (0xFFFFFFFFU) when transfer is canceled */
+			if ((0 != s_recvSize) && (USB_CANCELLED_TRANSFER_LENGTH != s_recvSize)) {
+				/* The operating timing sequence has guaranteed there is no conflict to access the s_recvSize between
+				   USB ISR and this task. Therefore, the following code of Enter/Exit ctitical mode is useless, only to
+				   mention users the exclusive access of s_recvSize if users implement their own
+				   application referred to this SDK demo */
+				CDC_VCOM_FreeRTOSEnterCritical(&usbOsaCurrentSr);
 
-	// #if USB_DEVICE_CONFIG_USE_TASK
+				if ((0U != s_recvSize) && (USB_CANCELLED_TRANSFER_LENGTH != s_recvSize)) {
+					/* Copy Buffer to Send Buff */
+					memcpy(s_currSendBuf, s_currRecvBuf, s_recvSize);
+					s_sendSize = s_recvSize;
+					s_recvSize = 0;
+				}
 
-	// if (s_cdcVcom.deviceHandle) {
-	// 	if (xTaskCreate(USB_DeviceTask,                  /* pointer to the task                      */
-	// 			(char const *)"usb device task", /* task name for kernel awareness debugging */
-	// 			5000L / sizeof(portSTACK_TYPE),  /* task stack size                          */
-	// 			s_cdcVcom.deviceHandle,          /* optional task startup argument           */
-	// 			5,                               /* initial priority                         */
-	// 			&s_cdcVcom.deviceTaskHandle      /* optional task handle to create           */
-	// 		       ) != pdPASS) {
-	// 		usb_echo("usb device task create failed!\r\n");
-	// 		return;
-	// 	}
-	// }
+				CDC_VCOM_FreeRTOSExitCritical(usbOsaCurrentSr);
+			}
 
-	// #endif
+			if (0U != s_sendSize) {
+				uint32_t size = s_sendSize;
+				s_sendSize    = 0;
 
-	// while (1) {
-	// 	if ((1U == s_cdcVcom.attach) && (1U == s_cdcVcom.startTransactions)) {
-	// 		/* Enter critical can not be added here because of the loop */
-	// 		/* endpoint callback length is USB_CANCELLED_TRANSFER_LENGTH (0xFFFFFFFFU) when transfer is canceled */
-	// 		if ((0 != s_recvSize) && (USB_CANCELLED_TRANSFER_LENGTH != s_recvSize)) {
-	// 			/* The operating timing sequence has guaranteed there is no conflict to access the s_recvSize between
-	// 			   USB ISR and this task. Therefore, the following code of Enter/Exit ctitical mode is useless, only to
-	// 			   mention users the exclusive access of s_recvSize if users implement their own
-	// 			   application referred to this SDK demo */
-	// 			CDC_VCOM_FreeRTOSEnterCritical(&usbOsaCurrentSr);
+				error =
+					USB_DeviceCdcAcmSend(s_cdcVcom.cdcAcmHandle, USB_CDC_VCOM_BULK_IN_ENDPOINT, s_currSendBuf, size);
 
-	// 			if ((0U != s_recvSize) && (USB_CANCELLED_TRANSFER_LENGTH != s_recvSize)) {
-	// 				/* Copy Buffer to Send Buff */
-	// 				memcpy(s_currSendBuf, s_currRecvBuf, s_recvSize);
-	// 				s_sendSize = s_recvSize;
-	// 				s_recvSize = 0;
-	// 			}
+				if (error != kStatus_USB_Success) {
+					/* Failure to send Data Handling code here */
+				}
+			}
 
-	// 			CDC_VCOM_FreeRTOSExitCritical(usbOsaCurrentSr);
-	// 		}
+			#if defined(FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED) && (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED > 0U) && \
+			defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
+			defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
 
-	// 		if (0U != s_sendSize) {
-	// 			uint32_t size = s_sendSize;
-	// 			s_sendSize    = 0;
+			if ((s_waitForDataReceive)) {
+				if (s_comOpen == 1) {
+					/* Wait for all the packets been sent during opening the com port. Otherwise these packets may
+					 * wake up the system.
+					 */
+					usb_echo("Waiting to enter lowpower ...\r\n");
 
-	// 			error =
-	// 				USB_DeviceCdcAcmSend(s_cdcVcom.cdcAcmHandle, USB_CDC_VCOM_BULK_IN_ENDPOINT, s_currSendBuf, size);
+					for (uint32_t i = 0U; i < 16000000U; ++i) {
+						__NOP(); /* delay */
+					}
 
-	// 			if (error != kStatus_USB_Success) {
-	// 				/* Failure to send Data Handling code here */
-	// 			}
-	// 		}
+					s_comOpen = 0;
+				}
 
-	// 		#if defined(FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED) && (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED > 0U) && \
-	// 		defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
-	// 		defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
+				usb_echo("Enter lowpower\r\n");
+				BOARD_DbgConsole_Deinit();
+				USB0->INTEN &= ~USB_INTEN_TOKDNEEN_MASK;
 
-	// 		if ((s_waitForDataReceive)) {
-	// 			if (s_comOpen == 1) {
-	// 				/* Wait for all the packets been sent during opening the com port. Otherwise these packets may
-	// 				 * wake up the system.
-	// 				 */
-	// 				usb_echo("Waiting to enter lowpower ...\r\n");
+				if (SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) {
+					SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
+				}
 
-	// 				for (uint32_t i = 0U; i < 16000000U; ++i) {
-	// 					__NOP(); /* delay */
-	// 				}
+				USB_EnterLowpowerMode();
 
-	// 				s_comOpen = 0;
-	// 			}
+				if (SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) {
+					SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+				}
 
-	// 			usb_echo("Enter lowpower\r\n");
-	// 			BOARD_DbgConsole_Deinit();
-	// 			USB0->INTEN &= ~USB_INTEN_TOKDNEEN_MASK;
+				s_waitForDataReceive = 0;
+				USB0->INTEN |= USB_INTEN_TOKDNEEN_MASK;
+				BOARD_DbgConsole_Init();
+				usb_echo("Exit  lowpower\r\n");
+			}
 
-	// 			if (SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) {
-	// 				SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;
-	// 			}
+			#endif
+		}
+	}
+}
 
-	// 			USB_EnterLowpowerMode();
+typedef struct {
+	clock_name_t name;
+	const char *label;
+} ClockNameInfo;
 
-	// 			if (SysTick->CTRL & SysTick_CTRL_ENABLE_Msk) {
-	// 				SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
-	// 			}
+void print_all_clock_freqs(void)
+{
+	ClockNameInfo clocks[] = {
+		{kCLOCK_CpuClk, "CPU Clock"},
+		{kCLOCK_AhbClk, "AHB Clock"},
+		{kCLOCK_SemcClk, "SEMC Clock"},
+		{kCLOCK_IpgClk, "IPG Clock"},
+		{kCLOCK_PerClk, "PER Clock"},
+		{kCLOCK_OscClk, "OSC Clock"},
+		{kCLOCK_RtcClk, "RTC Clock"},
+		{kCLOCK_ArmPllClk, "ARM PLL Clock"},
+		{kCLOCK_Usb1PllClk, "USB1 PLL Clock"},
+		{kCLOCK_Usb1PllPfd0Clk, "USB1 PLL PFD0"},
+		{kCLOCK_Usb1PllPfd1Clk, "USB1 PLL PFD1"},
+		{kCLOCK_Usb1PllPfd2Clk, "USB1 PLL PFD2"},
+		{kCLOCK_Usb1PllPfd3Clk, "USB1 PLL PFD3"},
+		{kCLOCK_Usb1SwClk, "USB1 SW Clock"},
+		{kCLOCK_Usb1Sw120MClk, "USB1 SW 120M"},
+		{kCLOCK_Usb1Sw60MClk, "USB1 SW 60M"},
+		{kCLOCK_Usb1Sw80MClk, "USB1 SW 80M"},
+		{kCLOCK_Usb2PllClk, "USB2 PLL Clock"},
+		{kCLOCK_SysPllClk, "SYS PLL Clock"},
+		{kCLOCK_SysPllPfd0Clk, "SYS PLL PFD0"},
+		{kCLOCK_SysPllPfd1Clk, "SYS PLL PFD1"},
+		{kCLOCK_SysPllPfd2Clk, "SYS PLL PFD2"},
+		{kCLOCK_SysPllPfd3Clk, "SYS PLL PFD3"},
+		{kCLOCK_EnetPll0Clk, "ENET PLL0"},
+		{kCLOCK_EnetPll1Clk, "ENET PLL1"},
+		{kCLOCK_EnetPll2Clk, "ENET PLL2"},
+		{kCLOCK_AudioPllClk, "Audio PLL Clock"},
+		{kCLOCK_VideoPllClk, "Video PLL Clock"},
+	};
 
-	// 			s_waitForDataReceive = 0;
-	// 			USB0->INTEN |= USB_INTEN_TOKDNEEN_MASK;
-	// 			BOARD_DbgConsole_Init();
-	// 			usb_echo("Exit  lowpower\r\n");
-	// 		}
+	usb_echo("\r\nSystem Clock Frequencies:\r\n");
+	usb_echo("--------------------------------------\r\n");
 
-	// 		#endif
-	// 	}
-	// }
+	for (size_t i = 0; i < sizeof(clocks) / sizeof(clocks[0]); ++i) {
+		uint32_t freq = CLOCK_GetFreq(clocks[i].name);
+
+		if (freq > 0) {
+			usb_echo("%s : %u Hz\r\n", clocks[i].label, freq);
+
+		} else {
+			usb_echo("%s : N/A\r\n", clocks[i].label);  // 某些未启用的时钟
+		}
+	}
+
+	usb_echo("--------------------------------------\r\n\r\n");
+}
+
+void PrintTask(void *handle)
+{
+	while (1) {
+		// 缓冲区大小建议大一点，FreeRTOS 文档推荐至少 512 字节
+		char buffer[256];
+
+		usb_echo("============ FreeRTOS System Info ============\r\n");
+
+// 打印任务列表
+		vTaskList(buffer);
+		usb_echo("Task List:\r\n");
+		usb_echo("Name                  State   Prio     Stack   Num\r\n");
+		usb_echo("**************************************************\r\n");
+		usb_echo("%s\n", buffer);
+
+// 打印任务运行时间
+		vTaskGetRunTimeStats(buffer);
+		usb_echo("Task Runtime Stats:\r\n");
+		usb_echo("Name                  Time      %%\r\n");
+		usb_echo("**************************************************\r\n");
+		usb_echo("%s\n", buffer);
+
+// 打印系统其他信息
+		usb_echo("System tick: %u\r\n", xTaskGetTickCount());
+		usb_echo("GPT TimerCount: %u\r\n", GPT_GetCurrentTimerCount(GPT1));
+		usb_echo("Free heap: %u bytes\r\n", xPortGetFreeHeapSize());
+		usb_echo("Min ever free heap: %u bytes\r\n", xPortGetMinimumEverFreeHeapSize());
+
+		usb_echo("==============================================\r\n\r\n");
+
+		print_all_clock_freqs();
+		vTaskDelay(1000);
+	}
 }
 
 #if defined(__CC_ARM) || (defined(__ARMCC_VERSION)) || defined(__GNUC__)
@@ -758,9 +833,47 @@ void APPTask(void *handle)
 		#endif
 	}
 
+	if (xTaskCreate(PrintTask,                                      /* pointer to the task                      */
+			s_printName,                                    /* task name for kernel awareness debugging */
+			APP_TASK_STACK_SIZE / sizeof(portSTACK_TYPE), /* task stack size                          */
+			NULL,                                   /* optional task startup argument           */
+			4,                                            /* initial priority                         */
+			NULL              /* optional task handle to create           */
+		       ) != pdPASS) {
+		usb_echo("print task create failed!\r\n");
+		#if (defined(__CC_ARM) || (defined(__ARMCC_VERSION)) || defined(__GNUC__))
+		return 1;
+		#else
+		return;
+		#endif
+	}
+
 	vTaskStartScheduler();
 
 	#if (defined(__CC_ARM) || (defined(__ARMCC_VERSION)) || defined(__GNUC__))
 	return 1;
 	#endif
+}
+
+uint32_t ulGetRunTimeCounterValue(void)
+{
+	return GPT_GetCurrentTimerCount(GPT1);
+}
+
+void vConfigureTimerForRunTimeStats(void)
+{
+	gpt_config_t gptConfig;
+
+	GPT_GetDefaultConfig(&gptConfig);
+	gptConfig.clockSource = kGPT_ClockSource_Periph;  // 根据系统实际设置
+
+	// 使能 GPT 时钟
+	CLOCK_EnableClock(kCLOCK_Gpt1);  // GPT1 用的是 GPT1 时钟
+	GPT_Init(GPT1, &gptConfig);
+
+	// 设置为最大分辨率，不分频
+	GPT_SetClockDivider(GPT1, 75);
+
+	// 以最大速度运行，计数到最大
+	GPT_StartTimer(GPT1);
 }

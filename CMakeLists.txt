@@ -39,30 +39,33 @@ if (NOT DEFINED SdkRootDirPath)
     SET(SdkRootDirPath ${ProjDirPath})
 endif()
 
+include(${ProjDirPath}/tools/function/add_module.cmake)
+
+# 收集所有模块文件
+add_module(
+    MODULE ALL
+    SUBDIRECTORY
+        src
+)
+
+message(STATUS "GLOBAL_ALL_SRC_FILES:")
+foreach(file IN LISTS GLOBAL_ALL_SRC_FILES)
+    message(STATUS "  ${file}")
+endforeach()
+
+message(STATUS "GLOBAL_ALL_INC_DIRS:")
+foreach(dir IN LISTS GLOBAL_ALL_INC_DIRS)
+    message(STATUS "  ${dir}")
+endforeach()
+
+
 include(${ProjDirPath}/flags.cmake)
 
 include(${ProjDirPath}/config.cmake)
 
-add_executable(${MCUX_SDK_PROJECT_NAME} 
-"${ProjDirPath}/src/usb_device_descriptor.c"
-"${ProjDirPath}/src/usb_device_descriptor.h"
-"${ProjDirPath}/src/virtual_com.c"
-"${ProjDirPath}/src/virtual_com.h"
-"${ProjDirPath}/src/hardware_init.c"
-"${ProjDirPath}/src/pin_mux.c"
-"${ProjDirPath}/src/pin_mux.h"
-"${ProjDirPath}/src/board.h"
-"${ProjDirPath}/src/board.c"
-"${ProjDirPath}/src/clock_config.h"
-"${ProjDirPath}/src/clock_config.c"
-"${ProjDirPath}/src/FreeRTOSConfig_Gen.h"
-"${ProjDirPath}/src/fsl_os_abstraction_config.h"
-"${ProjDirPath}/src/mcux_config.h"
-"${ProjDirPath}/src/usb_device_config.h"
-)
-
-target_include_directories(${MCUX_SDK_PROJECT_NAME} PRIVATE
-    ${ProjDirPath}/src/
+# 构建最终可执行文件
+add_executable(${MCUX_SDK_PROJECT_NAME} ${GLOBAL_ALL_SRC_FILES})
+target_include_directories(${MCUX_SDK_PROJECT_NAME} PRIVATE ${GLOBAL_ALL_INC_DIRS}
 )
 
 set_source_files_properties("${ProjDirPath}/src/FreeRTOSConfig_Gen.h" PROPERTIES COMPONENT_CONFIG_FILE "middleware_freertos-kernel_config")

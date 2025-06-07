@@ -85,7 +85,7 @@ SET(CMAKE_ASM_FLAGS_SDRAM_RELEASE " \
 ")
 SET(CMAKE_C_FLAGS_DEBUG " \
     ${CMAKE_C_FLAGS_DEBUG} \
-    -include ${ProjDirPath}/src/mcux_config.h \
+    -include ${ProjDirPath}/src/main/mcux_config.h \
     -DDEBUG \
     -DUSB_STACK_FREERTOS \
     -DMCUX_META_BUILD \
@@ -111,7 +111,7 @@ SET(CMAKE_C_FLAGS_DEBUG " \
 ")
 SET(CMAKE_C_FLAGS_FLEXSPI_NOR_DEBUG " \
     ${CMAKE_C_FLAGS_FLEXSPI_NOR_DEBUG} \
-    -include ${ProjDirPath}/src/mcux_config.h \
+    -include ${ProjDirPath}/src/main/mcux_config.h \
     -DDEBUG \
     -DXIP_BOOT_HEADER_ENABLE=1 \
     -DXIP_EXTERNAL_FLASH=1 \
@@ -139,7 +139,7 @@ SET(CMAKE_C_FLAGS_FLEXSPI_NOR_DEBUG " \
 ")
 SET(CMAKE_C_FLAGS_FLEXSPI_NOR_RELEASE " \
     ${CMAKE_C_FLAGS_FLEXSPI_NOR_RELEASE} \
-    -include ${ProjDirPath}/src/mcux_config.h \
+    -include ${ProjDirPath}/src/main/mcux_config.h \
     -DNDEBUG \
     -DXIP_BOOT_HEADER_ENABLE=1 \
     -DXIP_EXTERNAL_FLASH=1 \
@@ -166,7 +166,7 @@ SET(CMAKE_C_FLAGS_FLEXSPI_NOR_RELEASE " \
 ")
 SET(CMAKE_C_FLAGS_RELEASE " \
     ${CMAKE_C_FLAGS_RELEASE} \
-    -include ${ProjDirPath}/src/mcux_config.h \
+    -include ${ProjDirPath}/src/main/mcux_config.h \
     -DNDEBUG \
     -DUSB_STACK_FREERTOS \
     -DMCUX_META_BUILD \
@@ -191,7 +191,7 @@ SET(CMAKE_C_FLAGS_RELEASE " \
 ")
 SET(CMAKE_C_FLAGS_SDRAM_DEBUG " \
     ${CMAKE_C_FLAGS_SDRAM_DEBUG} \
-    -include ${ProjDirPath}/src/mcux_config.h \
+    -include ${ProjDirPath}/src/main/mcux_config.h \
     -DUSB_DEVICE_CONFIG_BUFFER_PROPERTY_CACHEABLE=1 \
     -DDEBUG \
     -DUSE_SDRAM=1 \
@@ -220,7 +220,7 @@ SET(CMAKE_C_FLAGS_SDRAM_DEBUG " \
 ")
 SET(CMAKE_C_FLAGS_SDRAM_RELEASE " \
     ${CMAKE_C_FLAGS_SDRAM_RELEASE} \
-    -include ${ProjDirPath}/src/mcux_config.h \
+    -include ${ProjDirPath}/src/main/mcux_config.h \
     -DUSB_DEVICE_CONFIG_BUFFER_PROPERTY_CACHEABLE=1 \
     -DNDEBUG \
     -DUSE_SDRAM=1 \

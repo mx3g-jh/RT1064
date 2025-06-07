@@ -5,13 +5,13 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _USB_CDC_VCOM_H_
-#define _USB_CDC_VCOM_H_ 1
+#ifndef _MAIN_H_
+#define _MAIN_H_ 1
 
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "event_groups.h"
-
+#include "task.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -97,4 +97,4 @@ typedef struct _usb_cdc_acm_info {
 	uint16_t uartState;       /* UART state of the CDC device.                      */
 } usb_cdc_acm_info_t;
 
-#endif /* _USB_CDC_VCOM_H_ */
+#endif /* _MAIN_H_ */

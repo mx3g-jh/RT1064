@@ -50,8 +50,13 @@ endef
 
 flash:
 	@$(MAKE) all
-	$(OPENOCD) -device $(USE_MCU_NAME) -speed 4000 -if SWD -CommanderScript jlink-flash-fw-standalone.jlink;
-	@echo "$(OPENOCD) flash done !"
+	@if [ -f ./build/${BUILD_NAME}.bin ]; then \
+		$(OPENOCD) -device $(USE_MCU_NAME) -speed 4000 -if SWD -CommanderScript jlink-flash-fw-standalone.jlink; \
+		echo "$(OPENOCD) flash done !"; \
+	else \
+		echo "Error: ./build/${BUILD_NAME}.bin not found!"; \
+		exit 1; \
+	fi
 
 # Makefile for Astyle
 # -------------------------
