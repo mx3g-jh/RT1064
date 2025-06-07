@@ -1,14 +1,14 @@
-#include "tasks.h"
+#include "Tasks.h"
 
-tasks::tasks(/* args */)
-{
-}
+// Tasks::Tasks(/* args */)
+// {
+// }
 
-tasks::~tasks()
-{
-}
+// Tasks::~Tasks()
+// {
+// }
 
-void tasks::InitTaskList()
-{
+// void Tasks::InitTaskList()
+// {
 
-}
+// }

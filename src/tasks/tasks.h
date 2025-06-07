@@ -1,13 +1,13 @@
 #ifndef _TASKS_H_
 #define _TASKS_H_
 
-class tasks
-{
-public:
-	tasks();
-	~tasks();
-	void InitTaskList();
-private:
-};
+// class Tasks
+// {
+// public:
+// 	Tasks();
+// 	~Tasks();
+// 	void InitTaskList();
+// private:
+// };
 
 #endif

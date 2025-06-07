@@ -25,6 +25,10 @@
 #ifndef __CMSIS_GCC_H
 #define __CMSIS_GCC_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #pragma GCC system_header   /* treat file as system include file */
 
 #include <arm_acle.h>
@@ -1001,6 +1005,10 @@ __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
   #include "m-profile/cmsis_gcc_m.h"
 #else
   #error "Unknown Arm architecture profile"
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* __CMSIS_GCC_H */

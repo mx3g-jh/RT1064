@@ -157,6 +157,10 @@
 #define USB_CDC_VCOM_DIC_SUBCLASS (0x00)
 #define USB_CDC_VCOM_DIC_PROTOCOL (USB_CDC_NO_CLASS_SPECIFIC_PROTOCOL)
 
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus */
+
 /*******************************************************************************
  * API
  ******************************************************************************/

@@ -12,7 +12,7 @@
 	#include "fsl_lpi2c.h"
 #endif /* SDK_I2C_BASED_COMPONENT_USED */
 #include "fsl_iomuxc.h"
-
+#include "pin_mux.h"
 /*******************************************************************************
  * Variables
  ******************************************************************************/
@@ -44,6 +44,15 @@ void BOARD_InitDebugConsole(void)
 	uint32_t uartClkSrcFreq = BOARD_DebugConsoleSrcFreq();
 
 	DbgConsole_Init(BOARD_DEBUG_UART_INSTANCE, BOARD_DEBUG_UART_BAUDRATE, BOARD_DEBUG_UART_TYPE, uartClkSrcFreq);
+}
+
+void BOARD_InitHardware(void)
+{
+	BOARD_ConfigMPU();
+
+	BOARD_InitBootPins();
+	BOARD_InitBootClocks();
+	BOARD_InitDebugConsole();
 }
 
 #if defined(SDK_I2C_BASED_COMPONENT_USED) && SDK_I2C_BASED_COMPONENT_USED

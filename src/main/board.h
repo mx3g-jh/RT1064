@@ -202,6 +202,10 @@ status_t BOARD_Touch_I2C_Receive(
 
 void BOARD_SD_Pin_Config(uint32_t speed, uint32_t strength);
 void BOARD_MMC_Pin_Config(uint32_t speed, uint32_t strength);
+void BOARD_InitHardware(void);
+
+void BOARD_DbgConsole_Deinit(void);
+void BOARD_DbgConsole_Init(void);
 
 #if defined(__cplusplus)
 }
