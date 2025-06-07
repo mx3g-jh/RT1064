@@ -22,15 +22,9 @@
 |-----------------------|-----------------------------------------|
 | `make`                | 编译项目（默认构建配置）               |
 | `make clean`          | 清理构建产物（移除 `build/` 目录）     |
-| `make jlink_flash`    | 使用 JLink 烧录固件到目标板            |
-| `make format`         | 自动格式化项目代码（使用 clang-format）|
-| `make check_format`   | git commit hook |
-
----
-
-## 🔗 参考文档
-
-请参考 [MCUXpresso SDK Documentation](https://mcuxpresso.nxp.com/mcuxsdk/25.03.00) 以获取更详细的 SDK 说明与配置方法。
+| `make flash`          | 使用 **JLink** 烧录固件到目标板           |
+| `make format`         | 自动格式化项目代码（使用 `clang-format`）|
+| `make check_format`   | `git commit hook` |
 
 ---
 
@@ -63,3 +57,9 @@
 └── tools/                         # 工具链文件与脚本
 ```
 </details>
+
+## 🔗 参考文档
+
+请参考 [MCUXpresso SDK Documentation](https://mcuxpresso.nxp.com/mcuxsdk/25.03.00) 以获取更详细的 SDK 说明与配置方法。
+
+---

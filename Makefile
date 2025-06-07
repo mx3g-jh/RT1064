@@ -48,7 +48,7 @@ define generate-jlink-script
 	@echo "q" >> jlink-flash-fw-standalone.jlink
 endef
 
-jlink_flash:
+flash:
 	@$(MAKE) all
 	$(OPENOCD) -device $(USE_MCU_NAME) -speed 4000 -if SWD -CommanderScript jlink-flash-fw-standalone.jlink;
 	@echo "$(OPENOCD) flash done !"
