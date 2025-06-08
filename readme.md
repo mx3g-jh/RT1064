@@ -9,8 +9,8 @@
 - [MCUXpresso SDK](https://mcuxpresso.nxp.com/)
 - GNU ARM Embedded Toolchain
 - CMake >= 3.13
-- `make`
-- `check-format`（可选，用于代码格式检查）
+- arm-none-eabi-gcc/g++ Require >= 10.3.0 (e.g.
+  10.3-2021.10).
 
 ---
 
