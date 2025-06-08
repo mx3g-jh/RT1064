@@ -20,13 +20,26 @@ extern "C" void app_main(void)
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+// 定义内存区域结构体数组
+static HeapRegion_t xHeapRegions[] = {
+	{ (uint8_t *)0x20200000, 128 * 1024 },  // m_data 区，128KB
+	{ (uint8_t *)0x20220000, 128 * 1024 },  // m_data2 区，128KB ： 768KB total
+	{ NULL, 0 }                             // 结束标志
+};
+
+void ConfigureHeapRegions(void)
+{
+	vPortDefineHeapRegions(xHeapRegions);
+}
+
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
 
 usb_cdc_vcom_struct_t s_cdcVcom;
-static char const *s_appName = "app task";
-static char const *s_printName = "print task";
+static char const *s_appName = "App task";
+static char const *s_printName = "Print task";
 
 typedef struct {
 	clock_name_t name;
@@ -128,10 +141,10 @@ void print_all_clock_freqs(void)
 
 void PrintTask(void *handle)
 {
-
+	char buffer[256];
 	while (1) {
+		TickType_t t1 = xTaskGetTickCount();
 		// 缓冲区大小建议大一点，FreeRTOS 文档推荐至少 512 字节
-		char buffer[512];
 		usb_echo("============== FreeRTOS System Info ==============\r\n");
 
 // 打印任务列表
@@ -150,13 +163,18 @@ void PrintTask(void *handle)
 
 // 打印系统其他信息
 		usb_echo("System tick: %u\r\n", xTaskGetTickCount());
-		usb_echo("GPT TimerCount: %u\r\n", GPT_GetCurrentTimerCount(GPT1));
+		TickType_t tick = xTaskGetTickCount();                // 获取当前Tick
+		uint32_t ms = tick * portTICK_PERIOD_MS;              // 转换为毫秒
+		usb_echo("System time : %u ms\r\n", ms);
+		usb_echo("GPT TimerCount : %u\r\n", GPT_GetCurrentTimerCount(GPT1));
 		usb_echo("Free heap: %u bytes\r\n", xPortGetFreeHeapSize());
-		usb_echo("Min ever free heap: %u bytes\r\n", xPortGetMinimumEverFreeHeapSize());
+		usb_echo("Min ever free heap : %u bytes\r\n", xPortGetMinimumEverFreeHeapSize());
 		usb_echo("==================================================\r\n\r\n");
 
 		print_all_clock_freqs();
-		vTaskDelay(1000);
+		TickType_t t2 = xTaskGetTickCount();
+		vTaskDelay(pdMS_TO_TICKS(1000));
+		usb_echo("实际间隔Tick = %u\r\n", t2 - t1);
 	}
 }
 
@@ -167,6 +185,7 @@ void PrintTask(void *handle)
 #endif
 {
 	BOARD_InitHardware();
+	ConfigureHeapRegions();
 
 	if (xTaskCreate(APPTask,                                      /* pointer to the task                      */
 			s_appName,                                    /* task name for kernel awareness debugging */

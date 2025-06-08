@@ -13,6 +13,7 @@
 #include "event_groups.h"
 #include "usb_virtual_com.h"
 #include "task.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -33,6 +34,7 @@ void print_all_clock_freqs(void);
 void PrintTask(void *handle);
 uint32_t ulGetRunTimeCounterValue(void);
 void vConfigureTimerForRunTimeStats(void);
+
 #ifdef __cplusplus
 }
 

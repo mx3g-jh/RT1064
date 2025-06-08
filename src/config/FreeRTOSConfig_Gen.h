@@ -40,8 +40,8 @@
 // #define configAPPLICATION_ALLOCATED_HEAP 0
 // #define configSTACK_ALLOCATION_FROM_SEPARATE_HEAP 0
 // #define configENABLE_HEAP_PROTECTOR 0
-#define configTOTAL_HEAP_SIZE 32768
-#define configFRTOS_MEMORY_SCHEME 4
+#define configTOTAL_HEAP_SIZE    (96 * 1024)  // 96KB
+#define configFRTOS_MEMORY_SCHEME 5
 // #define configSUPPORT_STATIC_ALLOCATION 0
 #define configMINIMAL_SECURE_STACK_SIZE 256
 #define configPRIO_BITS 4
@@ -118,6 +118,7 @@
 /* Run time stats gathering definitions. */
 unsigned long ulGetRunTimeCounterValue(void);
 void vConfigureTimerForRunTimeStats(void);
+
 #define configGENERATE_RUN_TIME_STATS    1
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()    vConfigureTimerForRunTimeStats()
 #define portGET_RUN_TIME_COUNTER_VALUE()            ulGetRunTimeCounterValue()
