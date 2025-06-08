@@ -40,7 +40,8 @@ MEMORY
   m_flash_config        (RX)  : ORIGIN = 0x70000000, LENGTH = 0x00001000
   m_ivt                 (RX)  : ORIGIN = 0x70001000, LENGTH = 0x00001000
   m_interrupts          (RX)  : ORIGIN = 0x70002000, LENGTH = 0x00000400
-  m_text                (RX)  : ORIGIN = 0x70002400, LENGTH = 0x003FDC00
+  m_flash1              (RX)  : ORIGIN = 0x70002400, LENGTH = 0x001FD400
+  m_flash2              (RX)  : ORIGIN = 0x703FF000, LENGTH = 0x00200000
   m_qacode              (RX)  : ORIGIN = 0x00000000, LENGTH = 0x00020000
   m_data                (RW)  : ORIGIN = 0x20000000, LENGTH = 0x00020000
   m_data2               (RW)  : ORIGIN = 0x20200000, LENGTH = 0x000C0000
@@ -95,19 +96,19 @@ SECTIONS
     KEEP (*(.init))
     KEEP (*(.fini))
     . = ALIGN(4);
-  } > m_text
+  } > m_flash1
 
   .ARM.extab :
   {
     *(.ARM.extab* .gnu.linkonce.armextab.*)
-  } > m_text
+  } > m_flash1
 
   .ARM :
   {
     __exidx_start = .;
     *(.ARM.exidx*)
     __exidx_end = .;
-  } > m_text
+  } > m_flash1
 
  .ctors :
   {
@@ -131,7 +132,7 @@ SECTIONS
     KEEP (*(SORT(.ctors.*)))
     KEEP (*(.ctors))
     __CTOR_END__ = .;
-  } > m_text
+  } > m_flash1
 
   .dtors :
   {
@@ -142,14 +143,14 @@ SECTIONS
     KEEP (*(SORT(.dtors.*)))
     KEEP (*(.dtors))
     __DTOR_END__ = .;
-  } > m_text
+  } > m_flash1
 
   .preinit_array :
   {
     PROVIDE_HIDDEN (__preinit_array_start = .);
     KEEP (*(.preinit_array*))
     PROVIDE_HIDDEN (__preinit_array_end = .);
-  } > m_text
+  } > m_flash1
 
   .init_array :
   {
@@ -157,7 +158,7 @@ SECTIONS
     KEEP (*(SORT(.init_array.*)))
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
-  } > m_text
+  } > m_flash1
 
   .fini_array :
   {
@@ -165,7 +166,7 @@ SECTIONS
     KEEP (*(SORT(.fini_array.*)))
     KEEP (*(.fini_array*))
     PROVIDE_HIDDEN (__fini_array_end = .);
-  } > m_text
+  } > m_flash1
 
   __etext = .;    /* define a global symbol at end of code */
   __DATA_ROM = .; /* Symbol is used by startup for data initialization */
@@ -225,8 +226,8 @@ SECTIONS
   } > m_data
 
   __DATA_END = __NDATA_ROM + (__noncachedata_init_end__ - __noncachedata_start__);
-  text_end = ORIGIN(m_text) + LENGTH(m_text);
-  ASSERT(__DATA_END <= text_end, "region m_text overflowed with text and data")
+  text_end = ORIGIN(m_flash1) + LENGTH(m_flash1);
+  ASSERT(__DATA_END <= text_end, "region m_flash1 overflowed with text and data")
 
   /* Uninitialized data section */
   .bss :
