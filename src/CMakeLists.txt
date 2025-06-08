@@ -1,9 +1,9 @@
 add_module(
     MODULE src
     SUBDIRECTORY
-        config
-        drivers
-        modules
-        tasks
-        main
+        Config
+        Drivers
+        Modules
+        Tasks
+        Main
 )

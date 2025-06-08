@@ -6,7 +6,17 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include "main.h"
-#include "tasks.h"
+#include "TaskManager.hpp"
+
+extern "C" void app_main(void)
+{
+	TaskManager::LoadFromTable();  // 从静态表加载所有任务
+
+	if (!TaskManager::InitAllTasks()) {
+		printf("Some tasks failed to start.\n");
+	}
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -36,27 +46,35 @@ typedef struct {
  */
 void APPTask(void *handle)
 {
-	usb_status_t error = kStatus_USB_Error;
-	const char *sendStr = "Hello test\r\n";
+	usb_status_t error;
 	USB_DeviceApplicationInit();
 
 	while (1) {
 		if ((1U == s_cdcVcom.attach) && (1U == s_cdcVcom.startTransactions)) {
+			const char *taskName = pcTaskGetName(NULL);           // 当前任务名
+			TickType_t tick = xTaskGetTickCount();                // 获取当前Tick
+			uint32_t ms = tick * portTICK_PERIOD_MS;              // 转换为毫秒
+
+			char msg[128];
+			int len = snprintf(msg, sizeof(msg),
+					   "[%s] Tick: %lu ms - Hello USB\r\n",
+					   taskName, ms);
 
 			error = USB_DeviceCdcAcmSend(
 					s_cdcVcom.cdcAcmHandle,
 					USB_CDC_VCOM_BULK_IN_ENDPOINT,
-					(uint8_t *)sendStr,
-					strlen(sendStr));
+					(uint8_t *)msg,
+					len);
 
 			if (error != kStatus_USB_Success) {
-				/* Failure to send Data Handling code here */
+				// USB send failed
 			}
 		}
 
-		vTaskDelay(1000);
+		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
 }
+
 
 void print_all_clock_freqs(void)
 {
@@ -110,12 +128,10 @@ void print_all_clock_freqs(void)
 
 void PrintTask(void *handle)
 {
-	Tasks* task = new Tasks();
 
 	while (1) {
 		// 缓冲区大小建议大一点，FreeRTOS 文档推荐至少 512 字节
 		char buffer[512];
-		task->InitTaskList();
 		usb_echo("============== FreeRTOS System Info ==============\r\n");
 
 // 打印任务列表
@@ -182,6 +198,7 @@ void PrintTask(void *handle)
 		#endif
 	}
 
+	app_main();
 	vTaskStartScheduler();
 
 	#if (defined(__CC_ARM) || (defined(__ARMCC_VERSION)) || defined(__GNUC__))

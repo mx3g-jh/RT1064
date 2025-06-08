@@ -1,5 +1,5 @@
 add_module(
-    MODULE tasks
+    MODULE Tasks
     SRCS
         *.c
         *.cpp

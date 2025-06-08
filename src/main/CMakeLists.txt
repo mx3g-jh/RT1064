@@ -1,5 +1,5 @@
 add_module(
-    MODULE mian
+    MODULE Mian
     SRCS
         *.c
         *.cpp

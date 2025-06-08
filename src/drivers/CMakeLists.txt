@@ -1,5 +1,5 @@
 add_module(
-    MODULE drivers
+    MODULE Drivers
     SUBDIRECTORY
         led
         uart
