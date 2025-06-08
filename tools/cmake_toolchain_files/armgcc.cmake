@@ -13,10 +13,10 @@ endif()
 
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
-# 工具链三元组
-set(TARGET_TRIPLET "arm-none-eabi")
+# 设置目标三元组（适用于 ARM GCC）
+set(TARGET_TRIPLET arm-none-eabi)
 
-# 先尝试使用环境变量 ARMGCC_DIR
+# 尝试从 ARMGCC_DIR 获取工具链路径
 if(DEFINED ENV{ARMGCC_DIR})
     set(TOOLCHAIN_DIR $ENV{ARMGCC_DIR})
     string(REPLACE "\\" "/" TOOLCHAIN_DIR "${TOOLCHAIN_DIR}")
@@ -42,6 +42,42 @@ else()
     set(CMAKE_OBJDUMP ${TOOLCHAIN_PREFIX}objdump CACHE INTERNAL "objdump tool")
 
     message(WARNING "ARMGCC_DIR not set, using ${TOOLCHAIN_PREFIX} from PATH.")
+endif()
+
+# 检查 arm-none-eabi-gcc 版本号
+execute_process(
+    COMMAND ${CMAKE_C_COMPILER} --version
+    OUTPUT_VARIABLE COMPILER_VERSION_STR
+    ERROR_VARIABLE COMPILER_VERSION_ERR
+    RESULT_VARIABLE COMPILER_VERSION_RES
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if(COMPILER_VERSION_RES)
+    message(FATAL_ERROR "Failed to run ${CMAKE_C_COMPILER} --version:\n${COMPILER_VERSION_ERR}")
+endif()
+
+# 提取版本字符串中类似于 "10.3.1" 的部分
+string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" GCC_VERSION ${COMPILER_VERSION_STR})
+
+if(NOT GCC_VERSION)
+    message(FATAL_ERROR "Failed to extract GCC version from output:\n${COMPILER_VERSION_STR}")
+endif()
+
+message(STATUS "Detected GCC version: ${GCC_VERSION}")
+
+# 将版本号转成可比较的数字，例如 "10.3.1" → 010003001
+string(REPLACE "." ";" VERSION_PARTS ${GCC_VERSION})
+list(GET VERSION_PARTS 0 V_MAJOR)
+list(GET VERSION_PARTS 1 V_MINOR)
+list(GET VERSION_PARTS 2 V_PATCH)
+math(EXPR GCC_VERSION_NUM "${V_MAJOR} * 1000000 + ${V_MINOR} * 1000 + ${V_PATCH}")
+
+# 10.3.1 → 10003001 (即大于等于 10.3.0)
+set(MIN_GCC_VERSION_NUM 10003000)
+
+if(GCC_VERSION_NUM LESS MIN_GCC_VERSION_NUM)
+    message(FATAL_ERROR "arm-none-eabi-gcc version ${GCC_VERSION} is too old. Require >= 10.3.0 (e.g. 10.3-2021.10).")
 endif()
 
 # 强制使用指定编译器

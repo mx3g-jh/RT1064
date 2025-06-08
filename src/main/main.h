@@ -12,7 +12,7 @@
 #include "semphr.h"
 #include "event_groups.h"
 #include "usb_virtual_com.h"
-
+#include "task.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

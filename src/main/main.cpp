@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include "main.h"
-
+#include "tasks.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -110,10 +110,12 @@ void print_all_clock_freqs(void)
 
 void PrintTask(void *handle)
 {
+	Tasks* task = new Tasks();
+
 	while (1) {
 		// 缓冲区大小建议大一点，FreeRTOS 文档推荐至少 512 字节
 		char buffer[512];
-
+		task->InitTaskList();
 		usb_echo("============== FreeRTOS System Info ==============\r\n");
 
 // 打印任务列表
