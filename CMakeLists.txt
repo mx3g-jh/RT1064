@@ -27,7 +27,7 @@ set(EXECUTABLE_OUTPUT_PATH ${ProjDirPath}/build/)
 set(LIBRARY_OUTPUT_PATH ${ProjDirPath}/build/)
 
 set(PROJECT_NAME ${CMAKE_BUILD_NAME})
-project(${PROJECT_NAME})
+project(${PROJECT_NAME} C CXX ASM)
 
 enable_language(ASM CXX C)
 
@@ -58,6 +58,8 @@ foreach(dir IN LISTS GLOBAL_ALL_INC_DIRS)
     message(STATUS "  ${dir}")
 endforeach()
 
+message(STATUS "C compiler: ${CMAKE_C_COMPILER}")
+message(STATUS "C++ compiler: ${CMAKE_CXX_COMPILER}")
 
 include(${ProjDirPath}/flags.cmake)
 

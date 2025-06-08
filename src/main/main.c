@@ -112,7 +112,7 @@ void PrintTask(void *handle)
 {
 	while (1) {
 		// 缓冲区大小建议大一点，FreeRTOS 文档推荐至少 512 字节
-		char buffer[256];
+		char buffer[512];
 
 		usb_echo("============== FreeRTOS System Info ==============\r\n");
 
@@ -135,7 +135,6 @@ void PrintTask(void *handle)
 		usb_echo("GPT TimerCount: %u\r\n", GPT_GetCurrentTimerCount(GPT1));
 		usb_echo("Free heap: %u bytes\r\n", xPortGetFreeHeapSize());
 		usb_echo("Min ever free heap: %u bytes\r\n", xPortGetMinimumEverFreeHeapSize());
-
 		usb_echo("==================================================\r\n\r\n");
 
 		print_all_clock_freqs();

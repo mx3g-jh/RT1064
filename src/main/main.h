@@ -8,15 +8,15 @@
 #ifndef _MAIN_H_
 #define _MAIN_H_ 1
 
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "event_groups.h"
+#include "usb_virtual_com.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "FreeRTOS.h"
-#include "semphr.h"
-#include "event_groups.h"
-#include "Tasks.h"
-#include "usb_virtual_com.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/

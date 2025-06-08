@@ -218,4 +218,9 @@ usb_status_t USB_DeviceGetStringDescriptor(usb_device_handle handle,
  */
 extern usb_status_t USB_DeviceGetConfigurationDescriptor(
 	usb_device_handle handle, usb_device_get_configuration_descriptor_struct_t *configurationDescriptor);
+
+#ifdef __cplusplus
+}
+
+#endif
 #endif /* _USB_DEVICE_DESCRIPTOR_H_ */
