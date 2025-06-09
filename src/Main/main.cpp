@@ -142,6 +142,7 @@ void print_all_clock_freqs(void)
 void PrintTask(void *handle)
 {
 	char buffer[256];
+
 	while (1) {
 		TickType_t t1 = xTaskGetTickCount();
 		// 缓冲区大小建议大一点，FreeRTOS 文档推荐至少 512 字节

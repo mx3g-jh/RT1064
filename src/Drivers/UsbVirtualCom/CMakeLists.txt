@@ -1,5 +1,5 @@
 add_module(
-    MODULE usb_virtual_com
+    MODULE UsbVirtualCom
     SRCS
         *.c
         *.cpp

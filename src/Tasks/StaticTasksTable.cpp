@@ -3,8 +3,8 @@
 
 // 静态任务注册表
 StaticTaskEntry static_task_table[] = {
-	{Tasks::Create<PrintTaskt>, "Print1", 256, 4, (void*)0x1234},
-	{Tasks::Create<PrintTaskt>, "Print2", 256, 4, (void*)0x4444},
+	{Tasks::Create<PrintTaskt>, "Print1", 256, 4, (void *)0x1234},
+	{Tasks::Create<PrintTaskt>, "Print2", 256, 4, (void *)0x4444},
 };
 
 

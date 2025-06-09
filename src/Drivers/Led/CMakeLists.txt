@@ -1,5 +1,5 @@
 add_module(
-    MODULE led
+    MODULE Led
     SRCS
         *.c
         *.cpp

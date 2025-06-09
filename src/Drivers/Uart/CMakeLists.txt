@@ -1,5 +1,5 @@
 add_module(
-    MODULE uart
+    MODULE Uart
     SRCS
         *.c
         *.cpp

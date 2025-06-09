@@ -2,3 +2,4 @@ build/
 jlink-flash-fw-standalone.jlink
 .vscode/
 .DS_Store
+log/

@@ -1,5 +1,5 @@
 add_module(
-    MODULE modules
+    MODULE Modules
     SUBDIRECTORY
         DebugPrint
 )
