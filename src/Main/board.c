@@ -43,6 +43,7 @@ void BOARD_InitDebugConsole(void)
 {
 	uint32_t uartClkSrcFreq = BOARD_DebugConsoleSrcFreq();
 
+	// DbgConsole_Init(BOARD_DEBUG_UART_INSTANCE, BOARD_DEBUG_UART_BAUDRATE, BOARD_DEBUG_UART_TYPE, uartClkSrcFreq);
 	DbgConsole_Init(BOARD_DEBUG_UART_INSTANCE, BOARD_DEBUG_UART_BAUDRATE, BOARD_DEBUG_UART_TYPE, uartClkSrcFreq);
 }
 

@@ -1,10 +1,8 @@
 add_module(
-    MODULE Mian
+    MODULE board
     SRCS
         *.c
         *.cpp
     INC
         ${CMAKE_CURRENT_SOURCE_DIR}
-    SUBDIRECTORY
-        mex_config
 )
