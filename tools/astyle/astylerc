@@ -1,21 +1,29 @@
-indent=force-tab=8
-style=linux
-indent-preproc-block
-indent-preproc-cond
-indent-preproc-define
-indent-cases
-break-blocks=all
-pad-oper
-pad-header
-unpad-paren
-keep-one-line-blocks
-keep-one-line-statements
-align-pointer=name
-align-reference=name
--n #--suffix=none
-ignore-exclude-errors-x
-lineend=linux
-exclude=EASTL
-add-braces
-break-elseifs
-max-code-length=120
+indent=force-tab=8              # 使用Tab字符进行缩进，每个Tab等于8个空格宽度
+style=linux                     # 使用Linux内核风格（K&R括号风格 + Tab缩进）
+
+indent-preproc-cond            # 缩进条件编译指令，如 #if/#else/#endif 等
+indent-preproc-define          # 缩进 #define 宏定义（尤其是多行 define）
+indent-cases                   # 在 switch-case 中缩进 case 标签
+
+break-blocks=all               # 所有代码块之间插入空行，包括函数之间和作用域之间
+
+pad-oper                       # 运算符两边加空格，如 a + b，a = b
+pad-header                     # 结构语句（if/for/while）后添加空格，如 if (x)
+unpad-paren                    # 移除括号外多余的空格，如 func( x ) → func(x)
+
+keep-one-line-blocks           # 保留单行的代码块，如 { return 0; }
+keep-one-line-statements       # 保留单行语句，不强制换行
+
+align-pointer=name             # 指针符号 `*` 靠变量名对齐，如 int* ptr;
+align-reference=name           # 引用符号 `&` 靠变量名对齐，如 const int& ref;
+
+-n                              # 不生成 `.orig` 备份文件（--suffix=none 的简写）
+ignore-exclude-errors-x        # 忽略 exclude 中无效路径或规则的报错
+lineend=linux                  # 使用 LF 作为换行符（Unix/Linux 风格）
+
+exclude=EASTL                  # 排除 EASTL 文件夹（例如你不想格式化这个第三方库）
+
+add-braces                     # 强制所有控制结构加花括号，如 if/for/while 后必须有 { }
+break-elseifs                  # 拆分 else if 成独立的 else 和 if 两行，提高可读性
+
+max-code-length=120            # 每行代码最长 120 个字符，超过时会换行

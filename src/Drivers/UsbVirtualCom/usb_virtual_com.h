@@ -26,55 +26,55 @@
 
 #include "usb_device_descriptor.h"
 #if (defined(FSL_FEATURE_SOC_SYSMPU_COUNT) && (FSL_FEATURE_SOC_SYSMPU_COUNT > 0U))
-	#include "fsl_sysmpu.h"
+#include "fsl_sysmpu.h"
 #endif /* FSL_FEATURE_SOC_SYSMPU_COUNT */
 
 #if ((defined FSL_FEATURE_SOC_USBPHY_COUNT) && (FSL_FEATURE_SOC_USBPHY_COUNT > 0U))
-	#include "usb_phy.h"
+#include "usb_phy.h"
 #endif
 #if defined(FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED) && (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED > 0U) && \
-	defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
-	defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
-	extern uint8_t USB_EnterLowpowerMode(void);
+defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
+defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
+extern uint8_t USB_EnterLowpowerMode(void);
 #endif
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
 
 #if defined(USB_DEVICE_CONFIG_EHCI) && (USB_DEVICE_CONFIG_EHCI > 0)
-	#ifndef CONTROLLER_ID
-		#define CONTROLLER_ID kUSB_ControllerEhci0
-	#endif
-	#define DATA_BUFF_SIZE HS_CDC_VCOM_BULK_OUT_PACKET_SIZE
+#ifndef CONTROLLER_ID
+#define CONTROLLER_ID kUSB_ControllerEhci0
+#endif
+#define DATA_BUFF_SIZE HS_CDC_VCOM_BULK_OUT_PACKET_SIZE
 #endif
 #if defined(USB_DEVICE_CONFIG_KHCI) && (USB_DEVICE_CONFIG_KHCI > 0)
-	#ifndef CONTROLLER_ID
-		#define CONTROLLER_ID kUSB_ControllerKhci0
-	#endif
-	#define DATA_BUFF_SIZE FS_CDC_VCOM_BULK_OUT_PACKET_SIZE
+#ifndef CONTROLLER_ID
+#define CONTROLLER_ID kUSB_ControllerKhci0
+#endif
+#define DATA_BUFF_SIZE FS_CDC_VCOM_BULK_OUT_PACKET_SIZE
 
 #endif
 #if defined(USB_DEVICE_CONFIG_LPCIP3511FS) && (USB_DEVICE_CONFIG_LPCIP3511FS > 0U)
-	#ifndef CONTROLLER_ID
-		#define CONTROLLER_ID kUSB_ControllerLpcIp3511Fs0
-	#endif
-	#define DATA_BUFF_SIZE FS_CDC_VCOM_BULK_OUT_PACKET_SIZE
+#ifndef CONTROLLER_ID
+#define CONTROLLER_ID kUSB_ControllerLpcIp3511Fs0
+#endif
+#define DATA_BUFF_SIZE FS_CDC_VCOM_BULK_OUT_PACKET_SIZE
 
 #endif
 
 #if defined(USB_DEVICE_CONFIG_LPCIP3511HS) && (USB_DEVICE_CONFIG_LPCIP3511HS > 0U)
-	#ifndef CONTROLLER_ID
-		#define CONTROLLER_ID kUSB_ControllerLpcIp3511Hs0
-	#endif
-	#define DATA_BUFF_SIZE HS_CDC_VCOM_BULK_OUT_PACKET_SIZE
+#ifndef CONTROLLER_ID
+#define CONTROLLER_ID kUSB_ControllerLpcIp3511Hs0
+#endif
+#define DATA_BUFF_SIZE HS_CDC_VCOM_BULK_OUT_PACKET_SIZE
 #endif
 
 #if defined(__GIC_PRIO_BITS)
-	#define USB_DEVICE_INTERRUPT_PRIORITY (25U)
+#define USB_DEVICE_INTERRUPT_PRIORITY (25U)
 #elif defined(__NVIC_PRIO_BITS) && (__NVIC_PRIO_BITS >= 3)
-	#define USB_DEVICE_INTERRUPT_PRIORITY (6U)
+#define USB_DEVICE_INTERRUPT_PRIORITY (6U)
 #else
-	#define USB_DEVICE_INTERRUPT_PRIORITY (3U)
+#define USB_DEVICE_INTERRUPT_PRIORITY (3U)
 #endif
 
 /* Currently configured line coding */

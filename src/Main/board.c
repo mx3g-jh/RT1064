@@ -9,7 +9,7 @@
 #include "fsl_debug_console.h"
 #include "board.h"
 #if defined(SDK_I2C_BASED_COMPONENT_USED) && SDK_I2C_BASED_COMPONENT_USED
-	#include "fsl_lpi2c.h"
+#include "fsl_lpi2c.h"
 #endif /* SDK_I2C_BASED_COMPONENT_USED */
 #include "fsl_iomuxc.h"
 #include "pin_mux.h"

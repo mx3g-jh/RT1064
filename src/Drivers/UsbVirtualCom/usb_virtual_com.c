@@ -11,14 +11,14 @@ void USB_DeviceClockInit(void);
 void USB_DeviceIsrEnable(void);
 
 #if USB_DEVICE_CONFIG_USE_TASK
-	void USB_DeviceTaskFn(void *deviceHandle);
+void USB_DeviceTaskFn(void *deviceHandle);
 #endif
 
 #if (defined(USB_DEVICE_CONFIG_LPCIP3511HS) && (USB_DEVICE_CONFIG_LPCIP3511HS > 0U))
-	#if !((defined FSL_FEATURE_SOC_USBPHY_COUNT) && (FSL_FEATURE_SOC_USBPHY_COUNT > 0U))
-		void USB_DeviceHsPhyChirpIssueWorkaround(void);
-		void USB_DeviceDisconnected(void);
-	#endif
+#if !((defined FSL_FEATURE_SOC_USBPHY_COUNT) && (FSL_FEATURE_SOC_USBPHY_COUNT > 0U))
+void USB_DeviceHsPhyChirpIssueWorkaround(void);
+void USB_DeviceDisconnected(void);
+#endif
 #endif
 
 usb_status_t USB_DeviceCdcVcomCallback(class_handle_t handle, uint32_t event, void *param);
@@ -80,10 +80,10 @@ static usb_device_class_config_list_struct_t s_cdcAcmConfigList = {
 };
 
 #if defined(FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED) && (FSL_FEATURE_USB_KHCI_KEEP_ALIVE_ENABLED > 0U) && \
-	defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
-	defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
-	volatile static uint8_t s_waitForDataReceive = 0;
-	volatile static uint8_t s_comOpen            = 0;
+defined(USB_DEVICE_CONFIG_KEEP_ALIVE_MODE) && (USB_DEVICE_CONFIG_KEEP_ALIVE_MODE > 0U) &&             \
+defined(FSL_FEATURE_USB_KHCI_USB_RAM) && (FSL_FEATURE_USB_KHCI_USB_RAM > 0U)
+volatile static uint8_t s_waitForDataReceive = 0;
+volatile static uint8_t s_comOpen            = 0;
 #endif
 /*******************************************************************************
  * Code
@@ -488,7 +488,7 @@ usb_status_t USB_DeviceCallback(usb_device_handle handle, uint32_t event, void *
 	case kUSB_DeviceEventGetConfigurationDescriptor:
 		if (NULL != param) {
 			error = USB_DeviceGetConfigurationDescriptor(handle,
-					(usb_device_get_configuration_descriptor_struct_t *)param);
+				(usb_device_get_configuration_descriptor_struct_t *)param);
 		}
 
 		break;

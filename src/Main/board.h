@@ -30,17 +30,17 @@
 #define BOARD_UART_IRQ_HANDLER LPUART1_IRQHandler
 
 #ifndef BOARD_DEBUG_UART_BAUDRATE
-	#define BOARD_DEBUG_UART_BAUDRATE (921600U)
+#define BOARD_DEBUG_UART_BAUDRATE (921600U)
 #endif /* BOARD_DEBUG_UART_BAUDRATE */
 
 /*! @brief The USER_LED used for board */
 #define LOGIC_LED_ON  (0U)
 #define LOGIC_LED_OFF (1U)
 #ifndef BOARD_USER_LED_GPIO
-	#define BOARD_USER_LED_GPIO GPIO1
+#define BOARD_USER_LED_GPIO GPIO1
 #endif
 #ifndef BOARD_USER_LED_GPIO_PIN
-	#define BOARD_USER_LED_GPIO_PIN 9U
+#define BOARD_USER_LED_GPIO_PIN 9U
 #endif
 
 #define USER_LED_INIT(output)                                            \
@@ -55,10 +55,10 @@
 
 /*! @brief Define the port interrupt number for the board switches */
 #ifndef BOARD_USER_BUTTON_GPIO
-	#define BOARD_USER_BUTTON_GPIO GPIO5
+#define BOARD_USER_BUTTON_GPIO GPIO5
 #endif
 #ifndef BOARD_USER_BUTTON_GPIO_PIN
-	#define BOARD_USER_BUTTON_GPIO_PIN (0U)
+#define BOARD_USER_BUTTON_GPIO_PIN (0U)
 #endif
 #define BOARD_USER_BUTTON_IRQ         GPIO5_Combined_0_15_IRQn
 #define BOARD_USER_BUTTON_IRQ_HANDLER GPIO5_Combined_0_15_IRQHandler
@@ -72,10 +72,10 @@
 
 /*! @brief The ENET PHY used for board. */
 #ifndef BOARD_ENET_PHY_RESET_GPIO
-	#define BOARD_ENET_PHY_RESET_GPIO GPIO1
+#define BOARD_ENET_PHY_RESET_GPIO GPIO1
 #endif
 #ifndef BOARD_ENET_PHY_RESET_GPIO_PIN
-	#define BOARD_ENET_PHY_RESET_GPIO_PIN (9U)
+#define BOARD_ENET_PHY_RESET_GPIO_PIN (9U)
 #endif
 
 #define BOARD_ENET_PHY_RESET                                                          \
