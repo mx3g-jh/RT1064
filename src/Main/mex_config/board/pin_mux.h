@@ -41,27 +41,54 @@ void BOARD_InitBootPins(void);
 /* Routed pin properties */
 #define BOARDINITPINS_UART_UART1_RXD_PERIPHERAL                          LPUART1   /*!< Peripheral name */
 #define BOARDINITPINS_UART_UART1_RXD_SIGNAL                                   RX   /*!< Signal name */
+#define BOARDINITPINS_UART_UART1_RXD_PIN_NAME                      GPIO_AD_B0_13   /*!< Routed pin name */
+#define BOARDINITPINS_UART_UART1_RXD_LABEL                           "UART1_RXD"   /*!< Label */
+#define BOARDINITPINS_UART_UART1_RXD_NAME                            "UART1_RXD"   /*!< Identifier */
 
 /* GPIO_AD_B0_12 (coord K14), UART1_TXD */
 /* Routed pin properties */
 #define BOARDINITPINS_UART_UART1_TXD_PERIPHERAL                          LPUART1   /*!< Peripheral name */
 #define BOARDINITPINS_UART_UART1_TXD_SIGNAL                                   TX   /*!< Signal name */
+#define BOARDINITPINS_UART_UART1_TXD_PIN_NAME                      GPIO_AD_B0_12   /*!< Routed pin name */
+#define BOARDINITPINS_UART_UART1_TXD_LABEL                           "UART1_TXD"   /*!< Label */
+#define BOARDINITPINS_UART_UART1_TXD_NAME                            "UART1_TXD"   /*!< Identifier */
 
 /* GPIO_AD_B1_03 (coord M12), UART2_RXD */
 /* Routed pin properties */
 #define BOARDINITPINS_UART_UART2_RXD_PERIPHERAL                          LPUART2   /*!< Peripheral name */
 #define BOARDINITPINS_UART_UART2_RXD_SIGNAL                                   RX   /*!< Signal name */
+#define BOARDINITPINS_UART_UART2_RXD_PIN_NAME                      GPIO_AD_B1_03   /*!< Routed pin name */
+#define BOARDINITPINS_UART_UART2_RXD_LABEL                           "UART2_RXD"   /*!< Label */
+#define BOARDINITPINS_UART_UART2_RXD_NAME                            "UART2_RXD"   /*!< Identifier */
 
 /* GPIO_AD_B1_02 (coord L11), UART2_TXD */
 /* Routed pin properties */
 #define BOARDINITPINS_UART_UART2_TXD_PERIPHERAL                          LPUART2   /*!< Peripheral name */
 #define BOARDINITPINS_UART_UART2_TXD_SIGNAL                                   TX   /*!< Signal name */
+#define BOARDINITPINS_UART_UART2_TXD_PIN_NAME                      GPIO_AD_B1_02   /*!< Routed pin name */
+#define BOARDINITPINS_UART_UART2_TXD_LABEL                           "UART2_TXD"   /*!< Label */
+#define BOARDINITPINS_UART_UART2_TXD_NAME                            "UART2_TXD"   /*!< Identifier */
 
 /*!
  * @brief Configures pin routing and optionally pin electrical features.
  *
  */
 void BoardInitPins_Uart(void);
+
+/* GPIO_B0_00 (coord D7), TMR1_CHANNEL_0 */
+/* Routed pin properties */
+#define BOARDINITPINS_TMR_TMR1_CHANNEL_0_PERIPHERAL                         TMR1   /*!< Peripheral name */
+#define BOARDINITPINS_TMR_TMR1_CHANNEL_0_SIGNAL                            TIMER   /*!< Signal name */
+#define BOARDINITPINS_TMR_TMR1_CHANNEL_0_CHANNEL                              0U   /*!< Signal channel */
+#define BOARDINITPINS_TMR_TMR1_CHANNEL_0_PIN_NAME                     GPIO_B0_00   /*!< Routed pin name */
+#define BOARDINITPINS_TMR_TMR1_CHANNEL_0_LABEL                  "TMR1_CHANNEL_0"   /*!< Label */
+#define BOARDINITPINS_TMR_TMR1_CHANNEL_0_NAME                   "TMR1_CHANNEL_0"   /*!< Identifier */
+
+/*!
+ * @brief Configures pin routing and optionally pin electrical features.
+ *
+ */
+void BoardInitPins_TMR(void);
 
 #if defined(__cplusplus)
 }

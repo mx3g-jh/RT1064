@@ -26,10 +26,17 @@
          <pins_profile>
             <processor_version>25.03.10</processor_version>
             <pin_labels>
+               <pin_label pin_num="D7" pin_signal="GPIO_B0_00" label="TMR1_CHANNEL_0" identifier="TMR1_CHANNEL_0"/>
                <pin_label pin_num="L11" pin_signal="GPIO_AD_B1_02" label="UART2_TXD" identifier="UART2_TXD"/>
                <pin_label pin_num="M12" pin_signal="GPIO_AD_B1_03" label="UART2_RXD" identifier="UART2_RXD"/>
             </pin_labels>
+            <external_user_signals>
+               <properties/>
+            </external_user_signals>
             <power_domains/>
+            <global_options>
+               <option_bool id="generateExtendedInformation" value="true"/>
+            </global_options>
          </pins_profile>
          <functions_list>
             <function name="BoardInitPins_Uart">
@@ -103,6 +110,47 @@
                      </pin_features>
                   </pin>
                   <pin peripheral="LPUART2" signal="TX" pin_num="L11" pin_signal="GPIO_AD_B1_02">
+                     <pin_features>
+                        <pin_feature name="software_input_on" value="Disable"/>
+                        <pin_feature name="hysteresis_enable" value="Disable"/>
+                        <pin_feature name="pull_up_down_config" value="Pull_Down_100K_Ohm"/>
+                        <pin_feature name="pull_keeper_select" value="Keeper"/>
+                        <pin_feature name="pull_keeper_enable" value="Enable"/>
+                        <pin_feature name="open_drain" value="Disable"/>
+                        <pin_feature name="speed" value="MHZ_200"/>
+                        <pin_feature name="drive_strength" value="R0_6"/>
+                        <pin_feature name="slew_rate" value="Fast"/>
+                     </pin_features>
+                  </pin>
+               </pins>
+            </function>
+            <function name="BoardInitPins_TMR">
+               <description>Configures pin routing and optionally pin electrical features.</description>
+               <options>
+                  <callFromInitBoot>true</callFromInitBoot>
+                  <coreID>core0</coreID>
+                  <enableClock>true</enableClock>
+                  <fullInit>true</fullInit>
+               </options>
+               <dependencies>
+                  <dependency resourceType="Peripheral" resourceId="TMR1" description="Peripheral TMR1 signals are routed in the Pins Tool, but the peripheral is not initialized in the Peripherals Tool." problem_level="1" source="Pins:BoardInitPins_TMR">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="SWComponent" resourceId="platform.drivers.common" description="Pins initialization requires the COMMON Driver in the project." problem_level="2" source="Pins:BoardInitPins_TMR">
+                     <feature name="enabled" evaluation="equal" configuration="core0">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="SWComponent" resourceId="platform.drivers.iomuxc" description="Pins initialization requires the IOMUXC Driver in the project." problem_level="2" source="Pins:BoardInitPins_TMR">
+                     <feature name="enabled" evaluation="equal" configuration="core0">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
+               </dependencies>
+               <pins>
+                  <pin peripheral="TMR1" signal="TIMER, 0" pin_num="D7" pin_signal="GPIO_B0_00">
                      <pin_features>
                         <pin_feature name="software_input_on" value="Disable"/>
                         <pin_feature name="hysteresis_enable" value="Disable"/>
@@ -276,12 +324,19 @@
             </clock_configuration>
          </clock_configurations>
       </clocks>
-      <dcdx name="DCDx" version="3.0" enabled="false" update_project_code="true">
+      <dcdx name="DCDx" version="4.0" enabled="false" update_project_code="true">
          <generated_project_files/>
          <dcdx_profile>
-            <processor_version>0.0.0</processor_version>
+            <processor_version>25.03.10</processor_version>
+            <output_format>c_array</output_format>
          </dcdx_profile>
-         <dcdx_configurations/>
+         <dcdx_configurations>
+            <dcdx_configuration name="Device_configuration">
+               <description></description>
+               <options/>
+               <command_groups/>
+            </dcdx_configuration>
+         </dcdx_configurations>
       </dcdx>
       <periphs name="Peripherals" version="15.0" enabled="true" update_project_code="true">
          <generated_project_files>

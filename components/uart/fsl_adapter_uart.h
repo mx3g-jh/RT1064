@@ -9,8 +9,10 @@
 #define __HAL_UART_ADAPTER_H__
 
 #include "fsl_common.h"
+#include "MIMXRT1064_COMMON.h"
 #if defined(SDK_OS_FREE_RTOS)
 #include "FreeRTOS.h"
+
 #endif
 
 /*!
@@ -27,7 +29,7 @@
 #define UART_ADAPTER_NON_BLOCKING_MODE (1U)
 #else
 #ifndef SERIAL_MANAGER_NON_BLOCKING_MODE
-#define UART_ADAPTER_NON_BLOCKING_MODE (0U)
+#define UART_ADAPTER_NON_BLOCKING_MODE (1U)
 #else
 #define UART_ADAPTER_NON_BLOCKING_MODE SERIAL_MANAGER_NON_BLOCKING_MODE
 #endif
@@ -69,7 +71,7 @@
 #endif
 
 #ifndef HAL_UART_DMA_ENABLE
-#define HAL_UART_DMA_ENABLE (0U)
+#define HAL_UART_DMA_ENABLE (1U)
 #endif /* HAL_UART_DMA_ENABLE */
 
 /*! @brief Enable or disable uart DMA adapter int mode (1 - enable, 0 - disable) */
@@ -125,7 +127,7 @@
 
 /*! @brief Whether enable transactional function of the UART. (0 - disable, 1 - enable) */
 #ifndef HAL_UART_TRANSFER_MODE
-#define HAL_UART_TRANSFER_MODE (0U)
+#define HAL_UART_TRANSFER_MODE (1U)
 #endif
 
 /*! @brief The handle of uart adapter. */
